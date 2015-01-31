@@ -3,7 +3,7 @@ import java.net._
 import java.io._
 import scala.io._
 
-class TradingBot{
+class TradingBot(ip: String, port: Int){
   type Symbol = String
   type Direction = String
   type Book = Map[Symbol,Map[Direction,ListBuffer[(Int,Int)]]]
@@ -53,8 +53,6 @@ class TradingBot{
     openOrders.remove(id)
   }
 
-  val host = "10.0.85.231"
-  val port = 20000
   val strategy: Strategy = new ETF()
 
   val s = new Socket(host, port)
@@ -150,6 +148,9 @@ class TradingBot{
   
 object TradingBot {
   def main(args : Array[String]) : Unit = {
-    new TradingBot()
+    if (args.length == 4)
+      new TradingBot(args(2),Integer.parseInt(args(3)))
+    else
+      new TradingBot("10.0.85.231",20000)
   }
 }
