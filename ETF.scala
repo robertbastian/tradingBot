@@ -5,13 +5,13 @@ class ETF extends Pennying {
 	val AMOUNT = 50
 	val DELTA = 0
 	val WIN = 10
-	val THRESH = 250
+	val THRESH = 100
 
 	override def startRunning(delegate: TradingBot) {
 		val t = new Thread{
 			override def run {
 				while (running){
-					Thread.sleep(1000)
+					Thread.sleep(100)
 
 					var buy_corge = minSell("CORGE")-DELTA
 					var buy_foo = minSell("FOO")-DELTA
