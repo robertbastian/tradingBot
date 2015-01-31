@@ -8,9 +8,13 @@ class TradingBot{
   type Direction = String
   type Book = Map[Symbol,Map[Direction,ListBuffer[(Int,Int)]]]
   
-  class Order(symbol: Symbol, dir: Direction, size: Int)
-  case class Trade(symbol: Symbol, dir: Direction, size: Int, price: Int) extends Order(symbol, dir, size)
-  case class Conversion(symbol: Symbol, dir: Direction, size: Int) extends Order(symbol, dir, size)
+  trait Order{
+    val symbol: Symbol
+    val dir: Direction
+    val size: Int
+  }
+  case class Conversion(val symbol: Symbol, val dir: Direction, val size: Int) extends Order
+  case class Trade(val symbol: Symbol, val dir: Direction, val size: Int, val price: Int) extends Order
 
   var nextOrderId = 0
   var openOrders = Map[Int,(Order,Long)]()
@@ -51,7 +55,7 @@ class TradingBot{
 
   val host = "10.0.85.231"
   val port = 20000
-  val strategy: Strategy = new Pennying()
+  val strategy: Strategy = new ETF()
 
   val s = new Socket(host, port)
   lazy val in = new BufferedSource(s.getInputStream()).getLines()
@@ -129,7 +133,7 @@ class TradingBot{
       println("Unknown line: "+l)
 
     // On every 30th line
-    if (i > 30){
+    if (i > 30 && strategy.orderTimeLimit > 0){
       for ((id,(order,time)) <- openOrders)
         if (time + strategy.orderTimeLimit*1000 < System.currentTimeMillis)
           cancel(id)
