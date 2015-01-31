@@ -111,7 +111,10 @@ class TradingBot{
       strategy.handleTrade(line(1),Integer.parseInt(line(2)),Integer.parseInt(line(3)), book)
     else if (line(0) == "ACK"){
       val id = Integer.parseInt(line(1))
-      openOrders(id) = queuedOrders.remove(id).get
+      match queuedOrders.remove(id) {
+        case Some(order) => openOrders(id) = order
+        case None => _
+      }
     }
     else if (line(0) == "REJECT"){
       openOrders.remove(Integer.parseInt(line(1)))
