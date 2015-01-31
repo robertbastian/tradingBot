@@ -3,7 +3,7 @@ import java.net._
 import java.io._
 import scala.io._
 
-class TradingBot(ip: String, port: Int){
+class TradingBot(host: String, port: Int){
   type Symbol = String
   type Direction = String
   type Book = Map[Symbol,Map[Direction,ListBuffer[(Int,Int)]]]
@@ -62,7 +62,6 @@ class TradingBot(ip: String, port: Int){
   out.println("HELLO SCALA")
   out.flush()
 
-  strategy.startRunning(this)
 
   var i = 0
 
@@ -72,13 +71,16 @@ class TradingBot(ip: String, port: Int){
 
     if (line(0) == "HELLO"){
       println("Let's go!")
-      canTrade = line(1) == "OPEN"
+      if (line(1) == "OPEN")
+        line(0) = "MARKET_OPEN"
       cash = Integer.parseInt(line(2))
       for (i <- 3 until line.size){
         var entry = line(i).split(":")
         positions(entry(0)) = Integer.parseInt(entry(1))
       }
     }
+    if (line(0) == "MARKET_OPEN")
+      strategy.startRunning(this)
     else if (line(0) == "BOOK"){
       val symbol = line(1)
       book(symbol)("BUY") = ListBuffer()
@@ -99,10 +101,8 @@ class TradingBot(ip: String, port: Int){
       }
       strategy.handleBook(book)
     } 
-    else if (line(0) == "MARKET_OPEN")
-      canTrade = true
     else if (line(0) == "MARKET_CLOSED")
-      canTrade = false
+      strategy.stopRunning
     else if (line(0) == "ERROR")
       println(line(1))
     else if (line(0) == "TRADE")

@@ -9,4 +9,5 @@ trait Strategy {
   def handleTrade(sym: Symbol,price: Int, size: Int, book: Book): Unit
   def startRunning(delegate: TradingBot): Unit
   def orderTimeLimit: Int
+  def stopRunning: Unit
 }
