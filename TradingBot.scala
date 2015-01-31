@@ -3,7 +3,8 @@ import java.net._
 import java.io._
 import scala.io._
 
-class TradingBot(ip: String, port: Int){
+class TradingBot(host: String, port: Int){
+  println(host,port)
   type Symbol = String
   type Direction = String
   type Book = Map[Symbol,Map[Direction,ListBuffer[(Int,Int)]]]
@@ -148,8 +149,8 @@ class TradingBot(ip: String, port: Int){
   
 object TradingBot {
   def main(args : Array[String]) : Unit = {
-    if (args.length == 4)
-      new TradingBot(args(2),Integer.parseInt(args(3)))
+    if (args.size == 2)
+      new TradingBot(args(0),Integer.parseInt(args(1)))
     else
       new TradingBot("10.0.85.231",20000)
   }
