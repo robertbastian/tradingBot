@@ -51,6 +51,17 @@ class ETF extends Pennying {
 		          case _ => {}
 			      }
 	        }
+
+	        for ((symbol,_) <- minSell){
+						val min = minSell(symbol); val max = maxBuy(symbol)
+						if (min != Int.MaxValue && max != 0){
+							val diff = min - max
+							var buyPrice = (max + diff*pennyingVal/100).toInt
+							var sellPrice = (min - diff*pennyingVal/100).toInt
+							delegate.sell(symbol,sellPrice,15)
+							delegate.buy(symbol,buyPrice,15)
+						}
+					}
 				}
 			}
 		}
