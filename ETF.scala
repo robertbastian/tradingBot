@@ -5,7 +5,7 @@ class ETF extends Pennying {
 	val AMOUNT = 50
 	val DELTA = 0
 	val WIN = 10
-	val THRESH = 25
+	val THRESH = 250
 
 	override def startRunning(delegate: TradingBot) {
 		val t = new Thread{
@@ -37,13 +37,13 @@ class ETF extends Pennying {
 	        }
 	        for ((id,(order,time)) <- delegate.openOrders){
 	        	order match {
-	        		case delegate.Trade(symbol,"BUY",size,price) => {
+	        		case delegate.Trade(symbol,"BUY",price,size) => {
 		            if (price + THRESH < minSell(symbol)) {
 		              delegate.cancel(id)
 		              delegate.buy(symbol, minSell(symbol) + DELTA, size);
 		            }
 		          }
-			        case delegate.Trade(symbol,"SELL",size,price) => {
+			        case delegate.Trade(symbol,"SELL",price,size) => {
 		            if (price - THRESH > maxBuy(symbol)) {
 		              delegate.cancel(id)
 		              delegate.sell(symbol, maxBuy(symbol) - DELTA, size);
